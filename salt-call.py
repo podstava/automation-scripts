@@ -1,27 +1,29 @@
+"""
+Script to test salt master via salt-api.
+Requires config file in same dir(config.py) in case of security.
+I`m using external pillar for configuring minions dynamically.
+Pillar can be changed due to tasks
+"""
+
 import json
 
 import requests
 
 try:
-    from .salt_config import config
+    from config import config
 except ImportError:
     print('No config file')
     exit()
 
-"""
-    Script to test salt master via salt-api. 
-    Requires config file in same dir(config.py) in case of security
-    I`m using external pillar for configuring minions dynamically.
-    Pillar can be changed due to tasks
-"""
-
 pillar = {"dbhost": "localhost", "dbport": "5432",
           "app_fqdn": "app.{}".format(config['base_url']),
-          "admin_fqdn": "admin.{}".format(config['base_url']),
+          "admin_fqdn": "adminold.{}".format(config['base_url']),
+          "admin2_fqdn": "admin.{}".format(config['base_url']),
           "shell_fqdn": "shell.{}".format(config['base_url']),
           "static_fqdn": "static.{}".format(config['base_url']),
           "app_url": "http://app.{}/dev1/".format(config['base_url']),
-          "admin_url": "http://admin.{}/".format(config['base_url']),
+          "admin_url": "http://adminold.{}/".format(config['base_url']),
+          "admin2_url": "http://admin.{}/".format(config['base_url']),
           "shell_url": "http://shell.{}/".format(config['base_url']),
           "static_url": "http://static.{}/".format(config['base_url']),
           "shell2_fqdn": "shell2.{}".format(config['base_url']),
@@ -57,8 +59,10 @@ pillar = {"dbhost": "localhost", "dbport": "5432",
           "server_ip": config['server_ip'],
           'app_name': 'app_server',
           'portal_client_id': config['portal_client_id'],
-          'portal_client_secret': ['portal_client_secret'],
-          'admin_email': config['admin_email']}
+          'portal_client_secret': config['portal_client_secret'],
+          'admin_email': config['admin_email'],
+          'front_admin_uri': "http://admin.jenko.t.enes.tech",
+          'org_name': 'jenko'}
 
 if __name__ == '__main__':
     url = config['master_url']
